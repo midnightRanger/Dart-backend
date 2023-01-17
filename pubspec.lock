@@ -36,6 +36,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
+  buffer:
+    dependency: transitive
+    description:
+      name: buffer
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0"
   collection:
     dependency: transitive
     description:
@@ -43,6 +50,69 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.17.0"
+  conduit:
+    dependency: "direct main"
+    description:
+      name: conduit
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.6"
+  conduit_codable:
+    dependency: transitive
+    description:
+      name: conduit_codable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.6"
+  conduit_common:
+    dependency: transitive
+    description:
+      name: conduit_common
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.6"
+  conduit_config:
+    dependency: transitive
+    description:
+      name: conduit_config
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.6"
+  conduit_core:
+    dependency: transitive
+    description:
+      name: conduit_core
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.6"
+  conduit_isolate_exec:
+    dependency: transitive
+    description:
+      name: conduit_isolate_exec
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.6"
+  conduit_open_api:
+    dependency: transitive
+    description:
+      name: conduit_open_api
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.6"
+  conduit_password_hash:
+    dependency: transitive
+    description:
+      name: conduit_password_hash
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.6"
+  conduit_runtime:
+    dependency: transitive
+    description:
+      name: conduit_runtime
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.6"
   convert:
     dependency: transitive
     description:
@@ -169,6 +239,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.3"
+  pedantic:
+    dependency: transitive
+    description:
+      name: pedantic
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.11.1"
   pool:
     dependency: transitive
     description:
@@ -176,6 +253,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.1"
+  postgres:
+    dependency: transitive
+    description:
+      name: postgres
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.5.2"
+  pub_cache:
+    dependency: transitive
+    description:
+      name: pub_cache
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.1"
   pub_semver:
     dependency: transitive
     description:
@@ -183,6 +274,34 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.3"
+  pubspec:
+    dependency: transitive
+    description:
+      name: pubspec
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.3.0"
+  quiver:
+    dependency: transitive
+    description:
+      name: quiver
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.2.1"
+  sasl_scram:
+    dependency: transitive
+    description:
+      name: sasl_scram
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1"
+  saslprep:
+    dependency: transitive
+    description:
+      name: saslprep
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   shelf:
     dependency: transitive
     description:
@@ -288,6 +407,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.1"
+  unorm_dart:
+    dependency: transitive
+    description:
+      name: unorm_dart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
+  uri:
+    dependency: transitive
+    description:
+      name: uri
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   vm_service:
     dependency: transitive
     description:
