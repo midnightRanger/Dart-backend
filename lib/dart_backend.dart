@@ -1,6 +1,7 @@
-
-
 import 'dart:io';
+import 'model/author.dart'; 
+import 'model/post.dart';
+import 'model/user.dart'; 
 
 import 'package:conduit/conduit.dart';
 

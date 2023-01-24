@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:conduit_core/conduit_core.dart';   
 
-class Migration1 extends Migration { 
+class Migration2 extends Migration { 
   @override
-  Future upgrade() async { 
+  Future upgrade() async {
+   
   }
   
   @override

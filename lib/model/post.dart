@@ -1,6 +1,6 @@
 import 'package:conduit/conduit.dart';
+import 'package:dart_backend/model/author.dart'; 
 
-import 'Author.dart';
 
 class Post extends ManagedObject<_Post> implements _Post {}
 
