@@ -4,12 +4,13 @@ import 'package:conduit/conduit.dart';
 
 import '../model/model_response.dart';
 import '../model/user.dart';
+import ''
 
-class AppAuthController extends ResourceController {
+
+import '../utils/app_response.dart';class AppAuthController extends ResourceController {
   AppAuthController(this.managedContext);
 
   final ManagedContext managedContext;
-}
 
 @Operation.post() 
 Future<Response> signIn(@Bind.body() User user) async {
@@ -44,7 +45,7 @@ Future<Response> signIn(@Bind.body() User user) async {
 
       //Получаем данные пользователя 
       final newUser = 
-        await managedContext.fetchObjectWithId<User>(findUser.id);
+        await managedContext.fetchObjectWithID<User>(findUser.id);
 
       return Response.ok(ModelResponse(
         data: newUser!.backing.contents, 
@@ -60,3 +61,4 @@ Future<Response> signIn(@Bind.body() User user) async {
       return AppResponse.serverError(e);
     }
   }
+}
