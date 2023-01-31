@@ -165,7 +165,7 @@ Future<Response> signIn(@Bind.body() User user) async {
 
     final tokens = <String, String>{}; 
     tokens['access'] = issueJwtHS256(accessClaimSet, key);
-    tokens ['refresh'] = issueJwtHS256(refreshClaimSet, key)
+    tokens ['refresh'] = issueJwtHS256(refreshClaimSet, key);
 
     return tokens; 
   }
