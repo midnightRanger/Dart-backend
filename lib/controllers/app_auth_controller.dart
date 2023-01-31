@@ -1,12 +1,16 @@
-import 'dart:html';
+import 'dart:io';
 
 import 'package:conduit/conduit.dart';
+import 'package:dart_backend/utils/app_utils.dart';
+import 'package:jaguar_jwt/jaguar_jwt.dart';
 
 import '../model/model_response.dart';
 import '../model/user.dart';
 
 
-import '../utils/app_response.dart';class AppAuthController extends ResourceController {
+import '../utils/app_response.dart';
+
+class AppAuthController extends ResourceController {
   AppAuthController(this.managedContext);
 
   final ManagedContext managedContext;
@@ -107,4 +111,62 @@ Future<Response> signIn(@Bind.body() User user) async {
       return AppResponse.serverError(e); 
     }
   } 
+
+  @Operation.post('refresh')
+  Future<Response> refreshToken(@Bind.path('refresh') String refreshToken) async {
+    try {
+      //Получение ID пользователя из jwt-токена
+      final id = AppUtils.getIdFromToken(refreshToken);
+
+      //Получение данных пользователя по его ID
+      final user = await managedContext.fetchObjectWithID<User>(id);
+
+      if(user!.refreshToken != refreshToken) {
+        return Response.unauthorized(body: "Non-valid token"); 
+      }
+
+      //Обновление token
+      _updateTokens(id, managedContext);
+
+      return Response.ok(
+        ModelResponse(data: user.backing.contents,
+        message: "Token was updated")
+      );
+
+    }
+    catch (e) {
+      return AppResponse.serverError(e);
+    }
+  }
+
+  void _updateTokens(int id, ManagedContext transaction) async {
+    final Map<String, String> tokens = _getTokens(id);
+
+    final qUpdateTokens = Query<User> (transaction)
+          ..where((element) => element.id).equalTo(id)
+          ..values.accessToken = tokens['access']
+          ..values.refreshToken = tokens['refresh'];
+
+    await qUpdateTokens.updateOne();
+
+  }
+
+  Map<String, String> _getTokens(int id) {
+    //todo remove when release 
+    final key = Platform.environment['SECRET_KEY'] ?? 'SECRET_KEY';
+    final accessClaimSet = JwtClaim(
+        maxAge: const Duration(hours: 1),
+        otherClaims: {'id': id}
+    ); 
+
+    final refreshClaimSet = JwtClaim(
+        otherClaims: {'id': id},
+    );
+
+    final tokens = <String, String>{}; 
+    tokens['access'] = issueJwtHS256(accessClaimSet, key);
+    tokens ['refresh'] = issueJwtHS256(refreshClaimSet, key)
+
+    return tokens; 
+  }
 }
