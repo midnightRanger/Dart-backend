@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:dart_backend/controllers/app_auth_controller.dart';
+
 import 'model/author.dart'; 
 import 'model/post.dart';
 import 'model/user.dart'; 
@@ -18,7 +20,8 @@ class AppService extends ApplicationChannel {
   }
 
   @override 
-  Controller get entryPoint => Router(); 
+  Controller get entryPoint => Router()
+      ..route('token/[:refresh').link(() => AppAuthController(managedContext));
 
   PersistentStore _initDatabase() {
     final username = Platform.environment['DB_USERNAME'] ?? 'postgres'; 
