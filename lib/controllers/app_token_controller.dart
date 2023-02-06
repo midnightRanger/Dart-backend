@@ -4,6 +4,8 @@ import 'dart:io';
 
 import 'package:jaguar_jwt/jaguar_jwt.dart';
 
+import '../utils/app_response.dart';
+
 class AppTokenController extends Controller {
   @override
   FutureOr<RequestOrResponse?> handle (Request request) {
@@ -19,6 +21,8 @@ class AppTokenController extends Controller {
         jwtClaim.validate(); 
         return request; 
     }
-    on JwtException
+    on JwtException catch(e) {
+      return AppResponse.serverError(e.message);
+    }
   }
 }

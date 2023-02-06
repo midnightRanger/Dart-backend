@@ -26,7 +26,7 @@ class AppUserController extends ResourceController {
     message: 'Успешное получение профиля: ', body: user.backing.contents);
  } 
  catch (e) {
-    return AppResponse.serverError(e, message: 'Ошибка получения профиля')
+    return AppResponse.serverError(e, message: 'Ошибка получения профиля');
   }
  }
 
@@ -61,7 +61,7 @@ class AppUserController extends ResourceController {
 
    }
 
-@Operation.put 
+@Operation.put() 
 Future<Response> updatePassword(
   @Bind.header(HttpHeaders.authorizationHeader) String header, 
   @Bind.query('newPassword') String newPassword, 
@@ -119,4 +119,3 @@ Future<Response> updatePassword(
 
 
 
-}
