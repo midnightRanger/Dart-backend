@@ -61,6 +61,61 @@ class AppUserController extends ResourceController {
 
    }
 
+@Operation.put 
+Future<Response> updatePassword(
+  @Bind.header(HttpHeaders.authorizationHeader) String header, 
+  @Bind.query('newPassword') String newPassword, 
+  @Bind.query('oldPassword') String oldPassword 
+) async {
+  try {
+    final id = AppUtils.getIdFromHeader(header);
+
+    final qFindUser = Query<User>(managedContext)
+      ..where((x) => x.id).equalTo(id)
+      ..returningProperties((x) => [
+        x.salt,
+        x.hashPassword
+      ]); 
+    
+    //Получаем только одну строчку
+    final fUser = await qFindUser.fetchOne();
+
+    //Создаем hash старого пароля 
+    final oldHashPassword = 
+          generatePasswordHash(oldPassword, fUser!.salt ?? "");
+
+    //Проверка старого пароля с паролем в БД
+    if (oldHashPassword != fUser.hashPassword) {
+      return AppResponse.badRequest(
+        message: 'Неверный старый пароль'
+      ); 
+    }
+
+    //Создание хэшированного нового пароля
+    final newHashPassword = 
+          generatePasswordHash(newPassword, fUser.salt ?? "");
+    
+    //Создание запроса на обновление пароля 
+    final qUpdateUser = Query<User>(managedContext)
+          ..where((x) => x.id).equalTo(id)
+          ..values.hashPassword = newHashPassword; 
+    
+    //Обновление пароля 
+    await qUpdateUser.fetchOne();
+
+    return AppResponse.ok (body: 'Пароль успешно обновлен'); 
+  } catch (e) {
+      return AppResponse.serverError(e, message: 'Ошибка обновления пароля'); 
+    
+  }
+
+
+
+
+  }
+  
+
+}
 
 
 
