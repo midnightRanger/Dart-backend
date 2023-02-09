@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'package:dart_backend/controllers/app_auth_controller.dart';
+import 'package:dart_backend/controllers/app_post_controller.dart';
 import 'package:dart_backend/controllers/app_user_controller.dart';
 
 import 'controllers/app_token_controller.dart';
 import 'model/author.dart'; 
 import 'model/post.dart';
 import 'model/user.dart'; 
+import 'model/category.dart'; 
 
 import 'package:conduit/conduit.dart';
 
@@ -27,7 +29,12 @@ class AppService extends ApplicationChannel {
       ) 
       ..route('user')
             .link(AppTokenController.new)!
-            .link(() => AppUserController(managedContext));
+            .link(() => AppUserController(managedContext),)
+            
+      ..route('post/[:id]')
+              .link(AppTokenController.new)! 
+              .link(() => AppPostController(managedContext));
+
 
   PersistentStore _initDatabase() {
     final username = Platform.environment['DB_USERNAME'] ?? 'postgres'; 

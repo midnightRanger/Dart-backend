@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:conduit/conduit.dart';
 
 import '../model/author.dart';
+import '../model/category.dart';
 import '../model/model_response.dart';
 import '../model/post.dart';
 import '../utils/app_response.dart';
@@ -21,7 +22,9 @@ class AppPostController extends ResourceController {
         //Получениe Id пользователя из хэдера 
         final id = AppUtils.getIdFromHeader(header); 
         //Запрос из БД автора по его Id 
-        final author = await managedContext.fetchObjectWithID<Author>(id);
+        var author = await managedContext.fetchObjectWithID<Author>(id);
+
+        final category = await managedContext.fetchObjectWithID<Category>(post.category?.id);
 
         //Если автора не существует, то нужно его создать 
         if (author == null) {
@@ -29,11 +32,23 @@ class AppPostController extends ResourceController {
           final qCreateAuthor = Query<Author>(managedContext)..values.id = id; 
           await qCreateAuthor.insert(); 
           } 
+        author = await managedContext.fetchObjectWithID<Author>(id);
+
+        if (category == null) {
+          final qCreateCategory = Query<Category>(managedContext)..values.categoryName = "Новая категория" 
+                        ..values.id = post.category?.id
+                        ..values.author = author;  
+          await qCreateCategory.insert(); 
+        }
 
           //Запрос для создания поста, передаем ID пользователя, контент из модели 
           final qCreatePost = Query<Post>(managedContext)
               ..values.author!.id = id
-              ..values.content = post.content; 
+              ..values.content = post.content
+              ..values.name = post.name
+              ..values.category = category
+              ..values.creationDate = DateTime.now() 
+              ..values.lastUpdating = DateTime.now();
 
               await qCreatePost.insert(); 
 
@@ -45,12 +60,16 @@ class AppPostController extends ResourceController {
 
     @Operation.get()
     Future<Response> getPosts(
-      @Bind.header(HttpHeaders.authorizationHeader) String header
+      @Bind.header(HttpHeaders.authorizationHeader) String header,
+      {@Bind.query("keyword") String? keyword}
     ) async {
 
       try {
       final id = AppUtils.getIdFromHeader(header); 
 
+      if(keyword == null) {
+
+      
       final qGetPost = Query<Post>(managedContext)
             ..where((x) => x.author!.id).equalTo(id);
           
@@ -61,6 +80,18 @@ class AppPostController extends ResourceController {
             body: ModelResponse(data: [], message: 'Постов не обнаружено'));
       
       return Response.ok(list);
+      }
+      else {
+        final qGetPost = Query<Post>(managedContext)
+              ..where((x) => x.author!.id).equalTo(id) ..where((x) => x.content).contains(keyword); 
+                final List<Post> list = await qGetPost.fetch(); 
+
+          if (list.isEmpty)
+          return Response.notFound(
+            body: ModelResponse(data: [], message: 'Постов не обнаружено'));
+      
+      return Response.ok(list);
+      }
     }
     
     catch (e) {
@@ -83,7 +114,10 @@ class AppPostController extends ResourceController {
         if (post.author?.id != currentAuthorId) {
           return AppResponse.ok(message: "Нет доступа к посту");
         }
+
+
         post.backing.removeProperty("author");
+        
         return AppResponse.ok(
           body: post.backing.contents, message: "Успешный вывод поста"
         );
@@ -146,4 +180,6 @@ class AppPostController extends ResourceController {
       }
 
     }
+
+    
     }
