@@ -119,4 +119,31 @@ class AppPostController extends ResourceController {
             }
 
       }
+
+    @Operation.delete("id") 
+    Future<Response> deletePost(
+      @Bind.header(HttpHeaders.authorizationHeader) String header,
+      @Bind.path("id") int id,
+    ) async {
+      try {
+        final currentAuthorId = AppUtils.getIdFromHeader(header);
+        final post = await managedContext.fetchObjectWithID<Post>(id);
+
+        if (post == null) {
+          return AppResponse.ok(message: "Пост не найден");
+        }
+        if (post.author?.id != currentAuthorId) {
+          return AppResponse.ok(message: "Нет доступа к посту");  
+        }
+        final qDeletePost = Query<Post>(managedContext)
+              ..where((x) => x.id).equalTo(id);
+
+        await qDeletePost.delete();
+        return AppResponse.ok(message: "Пост успешно удален");
+
+      } catch (e) {
+        return AppResponse.serverError(e, message: "Ошибка удаления поста");
+      }
+
+    }
     }
