@@ -82,9 +82,15 @@ class AppPostController extends ResourceController {
       return Response.ok(list);
       }
       else {
-        final qGetPost = Query<Post>(managedContext)
-              ..where((x) => x.author!.id).equalTo(id) ..where((x) => x.content).contains(keyword); 
-                final List<Post> list = await qGetPost.fetch(); 
+        // final qGetPost = Query<Post>(managedContext)
+        //       ..where((x) => x.author!.id).equalTo(id) ..where((x) => x.content).contains(keyword);   
+        //          
+
+          final qGetPost = Query<Post>(managedContext) 
+                ..predicate = new QueryPredicate("name like '%' || @keyword || '%' OR content like '%' || @keyword || '%'", {
+                  "keyword": keyword
+                });
+                final List<Post> list = await qGetPost.fetch();
 
           if (list.isEmpty)
           return Response.notFound(
