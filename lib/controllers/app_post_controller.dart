@@ -87,7 +87,7 @@ class AppPostController extends ResourceController {
         //          
 
           final qGetPost = Query<Post>(managedContext) 
-                ..predicate = new QueryPredicate("name like '%' || @keyword || '%' OR content like '%' || @keyword || '%'", {
+                ..predicate = new QueryPredicate("LOWER(name) like '%' || LOWER(@keyword) || '%' OR LOWER(content) like '%' || LOWER(@keyword) || '%'", {
                   "keyword": keyword
                 });
                 final List<Post> list = await qGetPost.fetch();
@@ -139,7 +139,14 @@ class AppPostController extends ResourceController {
       @Bind.body() Post bodyPost) async {
           try {
             final currentAuthorId = AppUtils.getIdFromHeader(header); 
-            final post = await managedContext.fetchObjectWithID<Post>(id); 
+
+            
+            final qGetPost = Query<Post>(managedContext)
+                  ..where((x) => x.id).equalTo(id)
+                  ..join(object: (x)=>x.author);
+              qGetPost.join(object: (u)=> u.category) 
+                  ..join(object: (u)=>u.author);
+            var post = await qGetPost.fetchOne();
             
             if(post == null) {
               return AppResponse.ok(message: "Пост не найден"); 
@@ -148,9 +155,21 @@ class AppPostController extends ResourceController {
               return AppResponse.ok(message: "Нет доступа к посту");
             }
 
+            var qGetCategory = Query<Category>(managedContext)
+                ..where((x) => x.id).equalTo(bodyPost.category?.id) ..join(object: (x) => x.author); 
+
+            var category = await qGetCategory.fetchOne();    
+
+            if (category == null || category.author?.id != currentAuthorId) {
+              return AppResponse.ok(message: "Такой категории не существует либо у вас нет к ней доступа"); 
+            }
+
             final qUpdatePost = Query<Post>(managedContext)
                   ..where((x) => x.id).equalTo(id)
-                  ..values.content = bodyPost.content; 
+                  ..values.content = bodyPost.content
+                  ..values.category?.id = bodyPost.category?.id
+                  ..values.name  = bodyPost.name
+                  ..values.lastUpdating = DateTime.now(); 
             
             await qUpdatePost.update(); 
             return AppResponse.ok(message: 'Пост успешно обновлен');
