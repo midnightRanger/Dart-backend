@@ -91,4 +91,32 @@ class AppPostController extends ResourceController {
         return AppResponse.serverError(e, message: "Ошибка создания поста");
       }
     }
-}
+
+    @Operation.put('id')
+    Future<Response> updatePost(
+      @Bind.header(HttpHeaders.authorizationHeader) String header,
+      @Bind.path("id") int id,
+      @Bind.body() Post bodyPost) async {
+          try {
+            final currentAuthorId = AppUtils.getIdFromHeader(header); 
+            final post = await managedContext.fetchObjectWithID<Post>(id); 
+            
+            if(post == null) {
+              return AppResponse.ok(message: "Пост не найден"); 
+            }
+            if (post.author?.id != currentAuthorId) {
+              return AppResponse.ok(message: "Нет доступа к посту");
+            }
+
+            final qUpdatePost = Query<Post>(managedContext)
+                  ..where((x) => x.id).equalTo(id)
+                  ..values.content = bodyPost.content; 
+            
+            await qUpdatePost.update(); 
+            return AppResponse.ok(message: 'Пост успешно обновлен');
+            } catch (e) {
+              return AppResponse.serverError(e); 
+            }
+
+      }
+    }
