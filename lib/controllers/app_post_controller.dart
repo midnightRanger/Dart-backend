@@ -74,6 +74,7 @@ class AppPostController extends ResourceController {
       final qGetPost = Query<Post>(managedContext)
             ..fetchLimit = pageLimit
             ..offset = pageLimit * skipRows
+            ..where((x) => x.status).equalTo(true)
             ..where((x) => x.author!.id).equalTo(id);
             
           
