@@ -61,7 +61,8 @@ class AppPostController extends ResourceController {
     @Operation.get()
     Future<Response> getPosts(
       @Bind.header(HttpHeaders.authorizationHeader) String header,
-      {@Bind.query("keyword") String? keyword}
+      {@Bind.query("keyword") String? keyword,   @Bind.query('pageLimit') int pageLimit = 0,
+      @Bind.query('skipRows') int skipRows = 0}
     ) async {
 
       try {
@@ -71,6 +72,8 @@ class AppPostController extends ResourceController {
 
       
       final qGetPost = Query<Post>(managedContext)
+            ..fetchLimit = pageLimit
+            ..offset = pageLimit * skipRows
             ..where((x) => x.author!.id).equalTo(id);
           
       final List<Post> list = await qGetPost.fetch(); 
@@ -87,6 +90,8 @@ class AppPostController extends ResourceController {
         //          
 
           final qGetPost = Query<Post>(managedContext) 
+          ..fetchLimit = pageLimit
+            ..offset = pageLimit * skipRows
                 ..predicate = new QueryPredicate("LOWER(name) like '%' || LOWER(@keyword) || '%' OR LOWER(content) like '%' || LOWER(@keyword) || '%'", {
                   "keyword": keyword
                 });
