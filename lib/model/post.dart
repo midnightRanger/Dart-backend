@@ -22,4 +22,8 @@ class _Post {
 
   @Relate(#postList, isRequired: true, onDelete: DeleteRule.cascade)
   Category? category; 
+
+  @Column(nullable: true, defaultValue: "true")
+  bool? status; 
+  
 }
