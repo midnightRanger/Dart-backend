@@ -37,6 +37,12 @@ Future<Response> signIn(@Bind.body() User user) async {
       throw QueryException.input("Пользователь не найден", []);
     }
 
+    if (!findUser.isActive!) {
+    return Response.forbidden(
+      body: ModelResponse(message: 'Ваш аккаунт заблокирован'));
+    }
+        
+
     // генерация хэша пароля для дальнейшей проверки
     final requestHashPassword = 
       generatePasswordHash(user.password ?? ' ', findUser.salt ?? ' ');

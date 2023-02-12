@@ -20,4 +20,6 @@ class _User {
   String? salt; 
   @Column(omitByDefault: true)
   String? hashPassword; 
+  @Column(defaultValue: "true", nullable: true)
+  bool? isActive;
 }

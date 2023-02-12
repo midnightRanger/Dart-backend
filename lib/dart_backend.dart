@@ -34,6 +34,7 @@ class AppService extends ApplicationChannel {
       ..route('post/[:id]')
               .link(AppTokenController.new)! 
               .link(() => AppPostController(managedContext));
+            
 
 
   PersistentStore _initDatabase() {

@@ -150,7 +150,7 @@ class AppPostController extends ResourceController {
                   ..where((x) => x.id).equalTo(id)
                   ..join(object: (x)=>x.author);
               qGetPost.join(object: (u)=> u.category) 
-                  ..join(object: (u)=>u.author);
+                  .join(object: (u)=>u.author);
             var post = await qGetPost.fetchOne();
             
             if(post == null) {
@@ -210,6 +210,42 @@ class AppPostController extends ResourceController {
       }
 
     }
+
+     @Operation.get("id")
+    Future<RequestOrResponse> logicDelete(
+       @Bind.header(HttpHeaders.authorizationHeader) String header, 
+       @Bind.path("id") int id, ) async
+        {
+      try {
+        final currentAuthorId = AppUtils.getIdFromHeader(header);
+        final post = await managedContext.fetchObjectWithID<Post>(id);
+
+        if (post == null) {
+          return AppResponse.ok(message: "Пост не найден");
+        }
+        if (post.author?.id != currentAuthorId) {
+          return AppResponse.ok(message: "Нет доступа к посту");  
+        }
+        final qLogicDeletePost = Query<Post>(managedContext)
+              ..where((x) => x.id).equalTo(id);
+              var logicDeletePost  = await qLogicDeletePost.fetchOne();
+        if (!logicDeletePost!.status!) {
+          return AppResponse.ok(message: "Пост уже удален");
+        }
+
+        qLogicDeletePost
+              ..values.status = false;  
+        
+        qLogicDeletePost.updateOne(); 
+
+
+        
+        return AppResponse.ok(message: "Логическое удаление поста успешно удален");
+
+      } catch (e) {
+        return AppResponse.serverError(e, message: "Ошибка удаления поста");
+      }
+       }
 
     
     }
