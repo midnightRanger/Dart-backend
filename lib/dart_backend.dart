@@ -31,10 +31,9 @@ class AppService extends ApplicationChannel {
       ..route('user')
             .link(AppTokenController.new)!
             .link(() => AppUserController(managedContext),)
-            
       ..route('post/[:id]')
               .link(AppTokenController.new)! 
-              .link(() => AppPostController(managedContext))
+              .link(() => AppPostController(managedContext),)
       ..route('postaction/[:id]')
               .link(AppTokenController.new)!
               .link(() => AppPostActionController(managedContext));

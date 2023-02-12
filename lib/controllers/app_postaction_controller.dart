@@ -11,11 +11,10 @@ class AppPostActionController extends ResourceController {
 
   final ManagedContext managedContext; 
 
-  @Operation.delete("id")
-    Future<RequestOrResponse> logicDelete(
+    @Operation.delete("id")
+    Future<Response> logicDelete(
        @Bind.header(HttpHeaders.authorizationHeader) String header, 
-       @Bind.path("id") int id, 
-       {@Bind.query('logicdelete') int? logicDelete}) async
+       @Bind.path("id") int id) async
         {
       try {
         final currentAuthorId = AppUtils.getIdFromHeader(header);

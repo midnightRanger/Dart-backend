@@ -27,7 +27,7 @@ Future<Response> signIn(@Bind.body() User user) async {
     returningProperties((element) => [
       element.id,
       element.salt,
-      element.hashPassword],
+      element.hashPassword, element.isActive],
       );
 
     //Получение первого элемента из списка
