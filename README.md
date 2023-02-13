@@ -89,5 +89,16 @@
 <div align="center"> 
 <img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic11.jpg?raw=true">
 </div>
-<p color="grey" style="font-size: 12px" align="center"> Рисунок 11 - updateProfile </p>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 12 - updateProfile </p>
 
+Реализовано также изменение пароля. Выбран метод Put, потому что производится обновление данных. С помощью @Bind.query переменным присваются значения, которые пользователь укажет в параметрах запроса - новый и старый пароль. 
+
+Затем производится поиск пользователя, но из его данных возвращается информация о соли и хэшированном пароле, так как необходимо хэшировать введенный пароль для проверки со старым по этой соли. 
+
+Создается переменная oldHashPassword, которая хэширует введенный пользователем старый пароль по той же соли, что был создан актуальный пароль. Если пароли совпадают, то генерируется новый хэшированный пароль, по той же соли, что и старый. Затем создается запрос на обновление пароля - тот же самый Update, рассмотренный выше, только из значений изменяется лишь hashPassword. Исполняется запрос на обновление строчки в БД.
+  
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic12.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 13 - updatePassword </p>
