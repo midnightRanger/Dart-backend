@@ -254,7 +254,7 @@ AppTokenController необходим для того, чтобы получат
 <p color="grey" style="font-size: 12px" align="center"> Рисунок 34 - Поиск </p>
 
 <div align="center"> 
-<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic35.jpg?raw=true">
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic35jpg.jpg?raw=true">
 </div>
 <p color="grey" style="font-size: 12px" align="center"> Рисунок 35 - Логическое удаление </p>
 
