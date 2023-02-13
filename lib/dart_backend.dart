@@ -8,7 +8,8 @@ import 'controllers/app_token_controller.dart';
 import 'model/author.dart'; 
 import 'model/post.dart';
 import 'model/user.dart'; 
-import 'model/category.dart'; 
+import 'model/category.dart';
+import 'model/history.dart';  
 
 import 'package:conduit/conduit.dart';
 

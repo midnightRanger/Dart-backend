@@ -1,4 +1,5 @@
 import 'package:conduit/conduit.dart';
+import 'package:dart_backend/model/history.dart';
 
 class User extends ManagedObject<_User> implements _User {}
 
@@ -22,4 +23,6 @@ class _User {
   String? hashPassword; 
   @Column(defaultValue: "true", nullable: true)
   bool? isActive;
+
+  ManagedSet<History>? categoryList;
 }
