@@ -84,6 +84,23 @@
 </div>
 <p color="grey" style="font-size: 12px" align="center"> Рисунок 11 - Регистрация </p>
 
+Метод _updateTokens позволяет обновить JWT-токен пользователя. Данный метод создает запрос на обновление, в котором заменяет поля access, refresh (соотвественно токены) на те, что указаны в параметрах метода. 
+
+Метод getTokens возвращает сам токен. Для начала, в переменную key записывается ключ, по которому должны генерироваться все токены (он берется из переменной среды). Затем создается JWTClaim, который устанавливает время жизни токена и его claim'ы - в данном случае ID (то, что будет храниться в токене). Затем, оба токена генерируется через метод issue.
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic26.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 12 - Update, get tokens </p>
+
+Сам запрос refreshTokens получает через Bind.path рефреш токен и сверяет его с тем, что находится в БД. Если проверка пройдена, то запрос возвращает метод UpdateTokens, описанный выше.
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic25.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 13 - Refresh Token </p>
+
+
 Теперь можно приступить к созданию контроллера, отвечающего за взаимодействие с данными пользователя.
 Далее идет создание первого метода. Аннотация Operation позволяет указать тип запроса - в данном случае GET. Метод getProfile асинхронный, возвращает Response. С помощью аннотации @Bind.header можно привязать данные из Header'а запроса - а именно из того, что связан с авторизацией. Таким образом, данные из заголовка перейдут в переменную header. 
 
@@ -94,12 +111,12 @@
 <div align="center"> 
 <img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic10.jpg?raw=true">
 </div>
-<p color="grey" style="font-size: 12px" align="center"> Рисунок 12 - getProfile </p>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 14 - getProfile </p>
 
 <div align="center"> 
 <img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic-utils.jpg?raw=true">
 </div>
-<p color="grey" style="font-size: 12px" align="center"> Рисунок 13 - AppUtils </p>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 15 - AppUtils </p>
 
 Иногда пользователям нужно обновлять информацию о себе. Для реализации этого, нужно создать метод updateProfile с аннотацией @Operation.post (так как персональные данные должны отправляться через тело запроса). Помимо этого, в параметрах функции указывается аннотация @Bind.body User user, которая говорит о том, что отправленное в тело запроса информация будет записана в модель User. 
 
@@ -108,7 +125,7 @@
 <div align="center"> 
 <img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic11.jpg?raw=true">
 </div>
-<p color="grey" style="font-size: 12px" align="center"> Рисунок 14 - updateProfile </p>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 16 - updateProfile </p>
 
 Реализовано также изменение пароля. Выбран метод Put, потому что производится обновление данных. С помощью @Bind.query переменным присваются значения, которые пользователь укажет в параметрах запроса - новый и старый пароль. 
 
@@ -120,33 +137,33 @@
 <div align="center"> 
 <img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic12.jpg?raw=true">
 </div>
-<p color="grey" style="font-size: 12px" align="center"> Рисунок 15 - updatePassword </p>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 17 - updatePassword </p>
 
 AppTokenController необходим для того, чтобы получать и сверять JWT-токен в процессе обработки запросов. Для начала, через Header запроса берется сам токен, который проверяется через метод. Затем, токен валидируется и контроллер возвращает запрос пользователя. 
 
 <div align="center"> 
 <img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic13.jpg?raw=true">
 </div>
-<p color="grey" style="font-size: 12px" align="center"> Рисунок 16 - AppTokenController </p>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 18 - AppTokenController </p>
 
 Следующий контроллер отвечает за логическое удаление и восстановление заметок. Прежде всего необходимо получить ID автора запроса через Header (c помощью парсерса, прописанного в AppUtils). Затем происходят проверки на Null и на то, что автор запроса является также автором заметки, которую собирается добавить в корзину. Если все проверки пройдены, то создается запрос на обновление, в котором через ..values меняется параметр статус с true на false. Запрос выполняется через метод updateOne(). Логическое восстановление происходит по тому же принципу, только тип запроса - PUT, а не DELETE. 
 
 <div align="center"> 
 <img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic14.jpg?raw=true">
 </div>
-<p color="grey" style="font-size: 12px" align="center"> Рисунок 17 - Логическое удаление </p>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 19 - Логическое удаление </p>
 
 <div align="center"> 
 <img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic15.jpg?raw=true">
 </div>
-<p color="grey" style="font-size: 12px" align="center"> Рисунок 18 - Логическое восстановление </p>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 20 - Логическое восстановление </p>
 
 Контроллер AppPostController отвечает за все действия, связанные с заметками. Для добавления новой заметки, необходимо в качестве параметров метода принимает модель Post. Затем, по ID нужно найти категорию заметки и автора. Если чего-то из этого нет, то создаются запросы на добавления - автора с пользовательским ID и категории с названием "Новая категория". После этого, создается сама заметка - все ее поля заполняются через ..values, значения которого берутся из тела запроса. 
 
 <div align="center"> 
 <img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic17.jpg?raw=true">
 </div>
-<p color="grey" style="font-size: 12px" align="center"> Рисунок 19 - Добавление заметки </p>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 21 - Добавление заметки </p>
 
 Затем следует метод, с помощью которого пользователь может получить все свои заметки. В параметрах метода указаны значения в {} скобках, что указывает на то, что они необязательны для отправки запроса. В первую очередь, через Bind.query задается переменная Keyword, отвечающая за поиск. Также задаются переменные PageLimit и Skiprows, отвечающие за пагинацию. 
 
@@ -156,9 +173,116 @@ AppTokenController необходим для того, чтобы получат
 
 Если же пользователь указал слово для поиска, то формируется запрос, где важным является ..predicate, который позволяет осуществлять конструкцию OR. В данном случае поиск производится по двум вещам - названию заметки и ее содержанию. Через запрос указывается OR конструкция, которая также позволяет не учитывать регистр для облегчения поиска. 
 
-div align="center"> 
+<div align="center"> 
 <img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic18.jpg?raw=true">
 </div>
-<p color="grey" style="font-size: 12px" align="center"> Рисунок 20 - Вывод заметок </p>
-  
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 22 - Вывод заметок </p>
 
+
+Иногда необходимо просмотреть информацию об одной заметке. Пользователь в запросе должен указать ID. Чтобы считать этот ID заметки, необходимо использовать аннотацию @Bind.path. Затем производится поиск заметки по этому ID, убирается лишняя информация и сама модель выводится в качестве ответа на запрос. 
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic19.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 23 - Вывод заметки </p>
+
+Обновление заметки имеет схожий код с добавлением. Через @Bind.path передается ID заметки для обновления, а через @Bind.body - данные. Создается запрос, который через where определяет строчку для обновлeния, а через ..values заменяет данные на те, что пользователь указал в теле запроса. 
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic20.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 24 - Обновление заметки </p>
+
+Для удаление, необходимо получить ID заметки через @Bind.path. Затем, нужно осуществить проверки на существование заметки и на то, что автор запроса является автором заметки. Если все проверки пройдены, то создается запрос, который выделяет только ту строчку, где соответствует ID. Удаление происходит через функцию delete(). 
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic21.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 25 - Удаление заметки </p>
+
+Контроллер AppHistoryController необходим для вывода всех действий пользователя. Выводятся только те действия, автором которых является автор запроса. 
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic22.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 26 - Вывод истории </p>
+
+Теперь пришло время вернуться к главному файлу, которая располагается в папке bin. В нем объявляется переменная port, которая обозначает порт, по которому будет работать веб-сервер. Затем инициализируется переменная service, которая принимает в качестве параметров port и конфигурационный файл. После этого, сервис запускается через функцию start, с указанным количеством инстанций и включенным консольным логгированием. 
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic27.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 27 - Старт сервера </p>
+
+</br>
+
+<h3> Результат работы </h3>
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic28.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 28 - Регистрация </p>
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic29.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 29 - Авторизация </p>
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic30.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 30 - Обновление токена </p>
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic31.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 31 - Добавление поста </p>
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic32.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 32 - Вывод постов </p>
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic33.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 33 - Изменение поста </p>
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic34.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 34 - Поиск </p>
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic35.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 35 - Логическое удаление </p>
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic36.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 36 - Логическое восстановление </p>
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic37.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 37 - История </p>
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic38.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 38 - Профиль </p>
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic39.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 39 - Изменение профиля </p>
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic40.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 40 - Изменение пароля </p>
+
+<h3> Заключение <h3>
+
+В ходе практической работы были усвоены принципы работы с фреймворком Conduit, была реализована backend-часть приложения на Dart'e. Развернуто API с системами авторизации и регистрации, которое позволяет манипулировать данными из БД, изменять, удалять, производить логическое удаление и восстановление, осуществлять поиск и пагинацию данных. 
