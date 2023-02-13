@@ -68,8 +68,18 @@
 
 Далее идет создание первого метода. Аннотация Operation позволяет указать тип запроса - в данном случае GET. Метод getProfile асинхронный, возвращает Response. С помощью аннотации @Bind.header можно привязать данные из Header'а запроса - а именно из того, что связан с авторизацией. Таким образом, данные из заголовка перейдут в переменную header. 
 
-Для получения данных о пользователе, нужно сначала получить его Id.
+Для получения данных о пользователе, нужно сначала получить его Id. Делается это с помощью заранее прописанного метода класса AppUtils. 
+Затем, в переменную User записываются данные о пользователе, полученные с помощью метода fetchObjectWithId. Данный метод возвращает данные из БД определенной модели по указанному ID. 
+Из модели убираются данные о токенах и возвращается ответ с выводом данных пользователя. 
 
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic10.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 10 - getProfile </p>
 
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic-utils.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 11 - AppUtils </p>
 
 
