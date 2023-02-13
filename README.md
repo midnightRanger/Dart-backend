@@ -82,7 +82,7 @@
 <div align="center"> 
 <img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic24.jpg?raw=true">
 </div>
-<p color="grey" style="font-size: 12px" align="center"> Рисунок 11 - Авторизация </p>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 11 - Регистрация </p>
 
 Теперь можно приступить к созданию контроллера, отвечающего за взаимодействие с данными пользователя.
 Далее идет создание первого метода. Аннотация Operation позволяет указать тип запроса - в данном случае GET. Метод getProfile асинхронный, возвращает Response. С помощью аннотации @Bind.header можно привязать данные из Header'а запроса - а именно из того, что связан с авторизацией. Таким образом, данные из заголовка перейдут в переменную header. 
@@ -121,5 +121,31 @@
 <img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic12.jpg?raw=true">
 </div>
 <p color="grey" style="font-size: 12px" align="center"> Рисунок 15 - updatePassword </p>
+
+AppTokenController необходим для того, чтобы получать и сверять JWT-токен в процессе обработки запросов. Для начала, через Header запроса берется сам токен, который проверяется через метод. Затем, токен валидируется и контроллер возвращает запрос пользователя. 
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic13.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 16 - AppTokenController </p>
+
+Следующий контроллер отвечает за логическое удаление и восстановление заметок. Прежде всего необходимо получить ID автора запроса через Header (c помощью парсерса, прописанного в AppUtils). Затем происходят проверки на Null и на то, что автор запроса является также автором заметки, которую собирается добавить в корзину. Если все проверки пройдены, то создается запрос на обновление, в котором через ..values меняется параметр статус с true на false. Запрос выполняется через метод updateOne(). Логическое восстановление происходит по тому же принципу, только тип запроса - PUT, а не DELETE. 
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic14.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 17 - Логическое удаление </p>
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic15.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 18 - Логическое восстановление </p>
+
+Контроллер AppPostController отвечает за все действия, связанные с заметками. Для добавления новой заметки, необходимо в качестве параметров метода принимает модель Post. Затем, по ID нужно найти категорию заметки и автора. Если чего-то из этого нет, то создаются запросы на добавления - автора с пользовательским ID и категории с названием "Новая категория". После этого, создается сама заметка - все ее поля заполняются через ..values, значения которого берутся из тела запроса. 
+
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic16.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 19 - Добавление заметки </p>
   
 
