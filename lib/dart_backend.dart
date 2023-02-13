@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dart_backend/controllers/app_auth_controller.dart';
+import 'package:dart_backend/controllers/app_history_controller.dart';
 import 'package:dart_backend/controllers/app_post_controller.dart';
 import 'package:dart_backend/controllers/app_user_controller.dart';
 
@@ -37,7 +38,11 @@ class AppService extends ApplicationChannel {
               .link(() => AppPostController(managedContext),)
       ..route('postaction/[:id]')
               .link(AppTokenController.new)!
-              .link(() => AppPostActionController(managedContext));
+              .link(() => AppPostActionController(managedContext))
+      ..route('history/[:id]')
+              .link(AppTokenController.new)!
+              .link(() => AppHistoryController(managedContext));
+
                
                
         
