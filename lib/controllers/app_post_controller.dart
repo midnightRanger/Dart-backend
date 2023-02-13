@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:conduit/conduit.dart';
+import 'package:dart_backend/model/history.dart';
 
 import '../model/author.dart';
 import '../model/category.dart';
@@ -51,6 +52,12 @@ class AppPostController extends ResourceController {
               ..values.lastUpdating = DateTime.now();
 
               await qCreatePost.insert(); 
+
+        var qHistoryAdd = Query<History>(managedContext)
+          ..values.dateTime = DateTime.now()
+          ..values.type = "Post with name ${post.name} created"
+          ..values.user?.id = id; 
+        qHistoryAdd.insert(); 
 
               return AppResponse.ok(message: 'Успешное создание поста');
       } catch (error) {
@@ -103,8 +110,17 @@ class AppPostController extends ResourceController {
           return Response.notFound(
             body: ModelResponse(data: [], message: 'Постов не обнаружено'));
       
+     
+       
+      var qHistoryAdd = Query<History>(managedContext)
+          ..values.dateTime = DateTime.now()
+          ..values.type = "Listed posts"
+          ..values.user?.id = id; 
+        qHistoryAdd.insert(); 
+
       return Response.ok(list);
       }
+      
     }
     
     catch (e) {
@@ -119,21 +135,25 @@ class AppPostController extends ResourceController {
     ) async {
       try {
         final currentAuthorId = AppUtils.getIdFromHeader(header); 
-        final post = await managedContext.fetchObjectWithID<Post>(id); 
-
+        final post = await managedContext.fetchObjectWithID<Post>(id);
+         
         if (post == null) {
           return AppResponse.ok(message: "Пост не найден");
         }
         if (post.author?.id != currentAuthorId) {
           return AppResponse.ok(message: "Нет доступа к посту");
-        }
+        } 
 
+        var qHistoryAdd = Query<History>(managedContext)
+          ..values.dateTime = DateTime.now()
+          ..values.type = "Listed post ${post.name}"
+          ..values.user?.id = currentAuthorId; 
+        qHistoryAdd.insert(); 
 
         post.backing.removeProperty("author");
+        post.backing.removeProperty("category");
         
-        return AppResponse.ok(
-          body: post.backing.contents, message: "Успешный вывод поста"
-        );
+        return AppResponse.ok(body: post.backing.contents, message: "Успешный вывод поста");
       } catch (e) {
         return AppResponse.serverError(e, message: "Ошибка создания поста");
       }
@@ -179,6 +199,13 @@ class AppPostController extends ResourceController {
                   ..values.lastUpdating = DateTime.now(); 
             
             await qUpdatePost.update(); 
+
+            var qHistoryAdd = Query<History>(managedContext)
+          ..values.dateTime = DateTime.now()
+          ..values.type = "Post with name ${bodyPost.name} updated"
+          ..values.user?.id = currentAuthorId; 
+            qHistoryAdd.insert(); 
+
             return AppResponse.ok(message: 'Пост успешно обновлен');
             } catch (e) {
               return AppResponse.serverError(e); 
@@ -205,6 +232,13 @@ class AppPostController extends ResourceController {
               ..where((x) => x.id).equalTo(id);
 
         await qDeletePost.delete();
+
+        var qHistoryAdd = Query<History>(managedContext)
+          ..values.dateTime = DateTime.now()
+          ..values.type = "Post with name ${post.name} deleted"
+          ..values.user?.id = currentAuthorId; 
+        qHistoryAdd.insert(); 
+
         return AppResponse.ok(message: "Пост успешно удален");
 
       } catch (e) {

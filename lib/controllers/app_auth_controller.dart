@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:conduit/conduit.dart';
+import 'package:dart_backend/model/history.dart';
 import 'package:dart_backend/utils/app_utils.dart';
 import 'package:jaguar_jwt/jaguar_jwt.dart';
 
@@ -55,6 +56,12 @@ Future<Response> signIn(@Bind.body() User user) async {
       //Получаем данные пользователя 
       final newUser = 
         await managedContext.fetchObjectWithID<User>(findUser.id);
+      
+      var qHistoryAdd = Query<History>(managedContext)
+          ..values.dateTime = DateTime.now()
+          ..values.type = "Authorization"
+          ..values.user?.id = findUser.id; 
+      qHistoryAdd.insert(); 
 
       return Response.ok(ModelResponse(
         data: newUser!.backing.contents, 
@@ -108,6 +115,12 @@ Future<Response> signIn(@Bind.body() User user) async {
 
       //Получение пользовательских данных по ID 
       final userData = await managedContext.fetchObjectWithID<User>(id);
+
+      var qHistoryAdd = Query<History>(managedContext)
+          ..values.dateTime = DateTime.now()
+          ..values.type = "Registration"
+          ..values.user?.id = id; 
+      qHistoryAdd.insert(); 
 
       return AppResponse.ok(body: userData!.backing.contents, 
         message: 'Пользователь успешно зарегистрировался'

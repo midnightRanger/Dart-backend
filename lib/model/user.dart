@@ -24,5 +24,5 @@ class _User {
   @Column(defaultValue: "true", nullable: true)
   bool? isActive;
 
-  ManagedSet<History>? categoryList;
+  ManagedSet<History>? historyList;
 }
