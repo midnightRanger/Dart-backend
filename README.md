@@ -77,7 +77,12 @@
 </div>
 <p color="grey" style="font-size: 12px" align="center"> Рисунок 10 - Авторизация </p>
 
+Второй метод - signUp отвечает за авторизацию. Он принимает модель User в теле запроса и также является асинхронным. Первым делом происходится проверка на null значения какого-либо из полей. Если проверк а пройдена, то генерируется соль, по которой создается хэшированный пароль. Далее, создается запрос на создание пользователя, где через ..values заполняется информация о нем (данные берутся из тела запроса, которое заполнил пользователь). Запрос выполняется в БД с помощью метода insert(). Токен обновляется через метод _updateTokens. Данные об этом действии записываются в историю, происходит получение данных о только что созданном пользователе и эти данные, как и сообщение об успешной регистрации, выводятся в качестве ответа на запрос. 
 
+<div align="center"> 
+<img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic24.jpg?raw=true">
+</div>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 11 - Авторизация </p>
 
 Теперь можно приступить к созданию контроллера, отвечающего за взаимодействие с данными пользователя.
 Далее идет создание первого метода. Аннотация Operation позволяет указать тип запроса - в данном случае GET. Метод getProfile асинхронный, возвращает Response. С помощью аннотации @Bind.header можно привязать данные из Header'а запроса - а именно из того, что связан с авторизацией. Таким образом, данные из заголовка перейдут в переменную header. 
@@ -89,12 +94,12 @@
 <div align="center"> 
 <img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic10.jpg?raw=true">
 </div>
-<p color="grey" style="font-size: 12px" align="center"> Рисунок 10 - getProfile </p>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 12 - getProfile </p>
 
 <div align="center"> 
 <img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic-utils.jpg?raw=true">
 </div>
-<p color="grey" style="font-size: 12px" align="center"> Рисунок 11 - AppUtils </p>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 13 - AppUtils </p>
 
 Иногда пользователям нужно обновлять информацию о себе. Для реализации этого, нужно создать метод updateProfile с аннотацией @Operation.post (так как персональные данные должны отправляться через тело запроса). Помимо этого, в параметрах функции указывается аннотация @Bind.body User user, которая говорит о том, что отправленное в тело запроса информация будет записана в модель User. 
 
@@ -103,7 +108,7 @@
 <div align="center"> 
 <img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic11.jpg?raw=true">
 </div>
-<p color="grey" style="font-size: 12px" align="center"> Рисунок 12 - updateProfile </p>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 14 - updateProfile </p>
 
 Реализовано также изменение пароля. Выбран метод Put, потому что производится обновление данных. С помощью @Bind.query переменным присваются значения, которые пользователь укажет в параметрах запроса - новый и старый пароль. 
 
@@ -115,6 +120,6 @@
 <div align="center"> 
 <img src="https://github.com/midnightRanger/Dart-backend/blob/main/images_git/pic12.jpg?raw=true">
 </div>
-<p color="grey" style="font-size: 12px" align="center"> Рисунок 13 - updatePassword </p>
+<p color="grey" style="font-size: 12px" align="center"> Рисунок 15 - updatePassword </p>
   
 

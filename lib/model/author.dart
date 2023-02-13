@@ -14,7 +14,4 @@ class _Author {
   //При помощи класса ManagedSet
   ManagedSet<Category>? categoryList; 
 
-  
-  
-
 }

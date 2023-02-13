@@ -156,7 +156,7 @@ Future<Response> signIn(@Bind.body() User user) async {
     catch (e) {
       return AppResponse.serverError(e);
     }
-  }
+  } 
 
   void _updateTokens(int id, ManagedContext transaction) async {
     final Map<String, String> tokens = _getTokens(id);
