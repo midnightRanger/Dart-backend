@@ -19,8 +19,8 @@ class AppAuthController extends ResourceController {
 @Operation.post() 
 Future<Response> signIn(@Bind.body() User user) async {
   if(user.password == null || user.userName == null) {
-    return Response.ok(
-       ModelResponse(message: 'Поля: password и username обязательны'));
+    return Response.badRequest(
+      body: ModelResponse(message: 'Поля: password и username обязательны'));
   }
 
   try {
@@ -39,8 +39,8 @@ Future<Response> signIn(@Bind.body() User user) async {
     }
 
     if (!findUser.isActive!) {
-    return Response.ok(
-       ModelResponse(message: 'Ваш аккаунт заблокирован'));
+    return Response.forbidden(
+      body: ModelResponse(message: 'Ваш аккаунт заблокирован'));
     }
         
 
@@ -81,8 +81,8 @@ Future<Response> signIn(@Bind.body() User user) async {
   @Operation.put()
   Future<Response> signUp(@Bind.body() User user) async {
     if (user.password == null || user.userName == null || user.email == null) {
-      return Response.ok(
-        ModelResponse(message: "Одно из полей: password, username, email не заполнено"),
+      return Response.badRequest(
+        body: ModelResponse(message: "Одно из полей: password, username, email не заполнено"),
       );
     }
 

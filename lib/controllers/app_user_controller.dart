@@ -101,7 +101,7 @@ Future<Response> updatePassword(
           ..values.hashPassword = newHashPassword; 
     
     //Обновление пароля 
-    await qUpdateUser.fetchOne();
+    await qUpdateUser.update();
 
     return AppResponse.ok (body: 'Пароль успешно обновлен'); 
   } catch (e) {

@@ -11,5 +11,5 @@ void main() async {
   ..options.configurationFilePath = 'config.yaml'; 
 
   //Запуск сервиса и его логирования, а так же три изолятора
-   await service.start(numberOfInstances: 3, consoleLogging: true);
-  }
+  await service.start(numberOfInstances: 3, consoleLogging: true);
+}
