@@ -150,14 +150,13 @@ class AppPostController extends ResourceController {
       //   ..values.user?.id = currentAuthorId;
       // qHistoryAdd.insert();
 
-      post.backing.removeProperty("creationDate");
-      post.backing.removeProperty("lastUpdating");
-      // post.backing.removeProperty("status");
-      post.backing.removeProperty("author");
-      post.backing.removeProperty("category");
+      
+
+    
 
 
-      var response = AppResponse.ok(message: 'Найдена заметка', body:  post.backing.contents);
+      var response = AppResponse.ok(message: 'Найдена заметка', body:  {"name": post.name, "content": post.content, 
+      "creationDate": post.creationDate.toString(), "lastUpdating": post.lastUpdating.toString()});
       return response;
     } catch (e) {
       return AppResponse.serverError(e, message: "Ошибка создания поста");
