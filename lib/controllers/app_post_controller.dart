@@ -156,7 +156,7 @@ class AppPostController extends ResourceController {
 
 
       var response = AppResponse.ok(message: 'Найдена заметка', body:  {"name": post.name, "content": post.content, 
-      "creationDate": post.creationDate.toString(), "lastUpdating": post.lastUpdating.toString()});
+      "creationDate": post.creationDate.toString(), "lastUpdating": post.lastUpdating.toString(), "status": post.status, "category": {"categoryName": post.category!.categoryName} });
       return response;
     } catch (e) {
       return AppResponse.serverError(e, message: "Ошибка создания поста");
@@ -185,7 +185,7 @@ class AppPostController extends ResourceController {
       }
 
       var qGetCategory = Query<Category>(managedContext)
-        ..where((x) => x.id).equalTo(bodyPost.category?.id)
+        ..where((x) => x.id).equalTo(post.category?.id)
         ..join(object: (x) => x.author);
 
       var category = await qGetCategory.fetchOne();
@@ -199,7 +199,6 @@ class AppPostController extends ResourceController {
       final qUpdatePost = Query<Post>(managedContext)
         ..where((x) => x.id).equalTo(id)
         ..values.content = bodyPost.content
-        ..values.category?.id = bodyPost.category?.id
         ..values.name = bodyPost.name
         ..values.lastUpdating = DateTime.now();
 
