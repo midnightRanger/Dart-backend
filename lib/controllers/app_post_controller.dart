@@ -86,7 +86,8 @@ class AppPostController extends ResourceController {
           ..fetchLimit = pageLimit
           ..offset = pageLimit * skipRows
           ..where((x) => x.status).equalTo(true)
-          ..where((x) => x.author!.id).equalTo(id);
+          ..where((x) => x.author!.id).equalTo(id)
+          ..join(object: (x) => x.category);
 
         final List<Post> list = await qGetPost.fetch();
 
@@ -105,7 +106,8 @@ class AppPostController extends ResourceController {
           ..offset = pageLimit * skipRows
           ..predicate = new QueryPredicate(
               "LOWER(name) like '%' || LOWER(@keyword) || '%' OR LOWER(content) like '%' || LOWER(@keyword) || '%'",
-              {"keyword": keyword});
+              {"keyword": keyword})
+          ..join(object: (x) => x.category);;
         final List<Post> list = await qGetPost.fetch();
 
         if (list.isEmpty)

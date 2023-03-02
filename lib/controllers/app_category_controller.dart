@@ -17,7 +17,7 @@ class AppCategoryController extends ResourceController {
   @Operation.post()
   Future<Response> createCategory(
       @Bind.header(HttpHeaders.authorizationHeader) String header,
-      @Bind.query("categoryName") String categoryName) async {
+      @Bind.body() Category category) async {
     try {
       //Получениe Id пользователя из хэдера
       final id = AppUtils.getIdFromHeader(header);
@@ -35,14 +35,14 @@ class AppCategoryController extends ResourceController {
 
       
         final qCreateCategory = Query<Category>(managedContext)
-          ..values.categoryName = categoryName
+          ..values.categoryName = category.categoryName
           ..values.author = author;
         await qCreateCategory.insert();
 
 
       var qHistoryAdd = Query<History>(managedContext)
         ..values.dateTime = DateTime.now()
-        ..values.type = "Category with name ${categoryName} created"
+        ..values.type = "Category with name ${category.categoryName} created"
         ..values.user?.id = id;
       qHistoryAdd.insert();
 
@@ -132,6 +132,8 @@ class AppCategoryController extends ResourceController {
         ..values.type = "Listed category ${category.categoryName}"
         ..values.user?.id = currentAuthorId;
       qHistoryAdd.insert();
+
+      category.backing.removeProperty("author");
 
       var response = AppResponse.ok(message: 'Найдена категория', body: category.backing.contents);
       return response;
