@@ -25,7 +25,7 @@ class AppPostController extends ResourceController {
       //Запрос из БД автора по его Id
       var author = await managedContext.fetchObjectWithID<Author>(id);
 
-      final category =
+      var category =
           await managedContext.fetchObjectWithID<Category>(post.category?.id);
 
       //Если автора не существует, то нужно его создать
@@ -42,7 +42,12 @@ class AppPostController extends ResourceController {
           ..values.id = post.category?.id
           ..values.author = author;
         await qCreateCategory.insert();
+
+        category =
+          await managedContext.fetchObjectWithID<Category>(post.category?.id);
       }
+
+    
 
       //Запрос для создания поста, передаем ID пользователя, контент из модели
       final qCreatePost = Query<Post>(managedContext)
@@ -144,11 +149,11 @@ class AppPostController extends ResourceController {
         return AppResponse.ok(message: "Нет доступа к посту");
       }
 
-      // var qHistoryAdd = Query<History>(managedContext)
-      //   ..values.dateTime = DateTime.now()
-      //   ..values.type = "Listed post ${post.name}"
-      //   ..values.user?.id = currentAuthorId;
-      // qHistoryAdd.insert();
+      var qHistoryAdd = Query<History>(managedContext)
+        ..values.dateTime = DateTime.now()
+        ..values.type = "Listed post ${post.name}"
+        ..values.user?.id = currentAuthorId;
+      qHistoryAdd.insert();
 
       
 
@@ -159,7 +164,7 @@ class AppPostController extends ResourceController {
       "creationDate": post.creationDate.toString(), "lastUpdating": post.lastUpdating.toString(), "status": post.status, "category": {"categoryName": post.category!.categoryName} });
       return response;
     } catch (e) {
-      return AppResponse.serverError(e, message: "Ошибка создания поста");
+      return AppResponse.serverError(e, message: "Ошибка поиска заметки");
     }
   }
 
